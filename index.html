@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Will You Be My Valentine?</title>
+  <title>Shaneeza, Will You Be My Valentine?</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -12,16 +12,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
 
     #container {
       text-align: center;
       position: relative;
+      width: 100%;
+      height: 100%;
     }
 
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 40px;
+      margin-top: 80px;
     }
 
     button {
@@ -31,27 +34,30 @@
       border-radius: 12px;
       cursor: pointer;
       transition: transform 0.2s ease;
+      position: absolute;
     }
 
     #yes {
       background-color: #4CAF50;
       color: white;
-      margin-right: 20px;
+      top: 45%;
+      left: 40%;
     }
 
     #no {
       background-color: #f44336;
       color: white;
-      position: absolute;
+      top: 45%;
+      left: 55%;
     }
 
     #gif {
       display: none;
-      margin-top: 30px;
+      margin-top: 40px;
     }
 
     #gif img {
-      max-width: 300px;
+      max-width: 320px;
       border-radius: 16px;
     }
   </style>
@@ -65,7 +71,10 @@
 
     <div id="gif">
       <h2>YAYYYYY 🥰</h2>
-      <img src="https://media.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif" alt="Happy man">
+      <img
+        src="https://media.giphy.com/media/3o7abldj0b3rxrZUxW/giphy.gif"
+        alt="Happy man"
+      />
     </div>
   </div>
 
@@ -75,26 +84,40 @@
     const gif = document.getElementById("gif");
 
     let yesScale = 1;
-    const maxScale = 2.2;
+    const maxScale = 2.5;
+    const growthStep = 0.15;
 
-    // Grow YES button on hover
-    yesBtn.addEventListener("mouseenter", () => {
+    function growYes() {
       if (yesScale < maxScale) {
-        yesScale += 0.15;
+        yesScale += growthStep;
         yesBtn.style.transform = `scale(${yesScale})`;
       }
-    });
+    }
 
-    // NO button jumps away
+    // YES grows when hovered
+    yesBtn.addEventListener("mouseenter", growYes);
+
+    // Fixed jump positions for NO
+    const positions = [
+      { top: "30%", left: "20%" },
+      { top: "30%", left: "70%" },
+      { top: "60%", left: "20%" },
+      { top: "60%", left: "70%" },
+      { top: "45%", left: "55%" }
+    ];
+
+    let currentPosition = 0;
+
+    // NO jumps and makes YES grow
     noBtn.addEventListener("mouseenter", () => {
-      const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+      growYes();
 
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      currentPosition = (currentPosition + 1) % positions.length;
+      noBtn.style.top = positions[currentPosition].top;
+      noBtn.style.left = positions[currentPosition].left;
     });
 
-    // YES clicked
+    // YES clicked → success
     yesBtn.addEventListener("click", () => {
       yesBtn.style.display = "none";
       noBtn.style.display = "none";
